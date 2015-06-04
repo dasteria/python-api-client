@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import with_statement
 
 import datetime
 import time
@@ -233,9 +232,9 @@ class MeetupOAuth(Meetup):
 
 class API_Response(object):
     def __init__(self, json, uritype):
-         """Creates an object to act as container for API return val. Copies metadata from JSON"""
-         self.meta = json['meta']
-         uriclasses = {GROUPS_URI:Group,
+        """Creates an object to act as container for API return val. Copies metadata from JSON"""
+        self.meta = json['meta']
+        uriclasses = {GROUPS_URI:Group,
                        EVENTS_URI:Event,
                        TOPICS_URI:Topic,
                        CITIES_URI:City, 
@@ -243,7 +242,7 @@ class API_Response(object):
                        PHOTOS_URI:Photo,
                        RSVPS_URI:Rsvp,
                        COMMENTS_URI:Comment}
-         self.results = [uriclasses[uritype](item) for item in json['results']]
+        self.results = [uriclasses[uritype](item) for item in json['results']]
 
     def __str__(self):
         return 'meta: ' + str(self.meta) + '\n' + str(self.results)
@@ -253,13 +252,13 @@ class API_Item(object):
 
     datafields = [] #override
     def __init__(self, properties):
-         """load properties that are relevant to all items (id, etc.)"""
-         for field in self.datafields:
-             self.__setattr__(field, properties[field])
-         self.json = properties
+        """load properties that are relevant to all items (id, etc.)"""
+        for field in self.datafields:
+            self.__setattr__(field, properties[field])
+        self.json = properties
 
     def __repr__(self):
-         return self.__str__();
+        return self.__str__();
 
 class Member(API_Item):
     datafields = ['bio', 'name', 'link','id','photo_url', 'zip','lat','lon','city','state','country','joined','visited']
@@ -305,7 +304,7 @@ class Group(API_Item):
                    'topics']
     
     def __str__(self):
-         return "%s (%s)" % (self.name, self.link)
+        return "%s (%s)" % (self.name, self.link)
 
     def get_events(self, apiclient, **extraparams):
         extraparams['group_id'] = self.id
@@ -323,7 +322,7 @@ class City(API_Item):
     datafields = ['city','country','state','zip','members','lat','lon']
 
     def __str__(self):
-         return "%s %s, %s, %s, with %s members" % (self.city, self.zip, self.country, self.state, self.members)
+        return "%s %s, %s, %s, with %s members" % (self.city, self.zip, self.country, self.state, self.members)
 
     def get_groups(self,apiclient,  **extraparams):
         extraparams.update({'city':self.city, 'country':self.country})
@@ -340,23 +339,23 @@ class Topic(API_Item):
                   'members','urlkey']
     
     def __str__(self):
-         return "%s with %s members (%s)" % (self.name, self.members,
+        return "%s with %s members (%s)" % (self.name, self.members,
                                              self.urlkey)
 
     def get_groups(self, apiclient, **extraparams):
-         extraparams['topic'] = self.urlkey
-         return apiclient.get_groups(**extraparams)
+        extraparams['topic'] = self.urlkey
+        return apiclient.get_groups(**extraparams)
     
     def get_photos(self, apiclient, **extraparams):
-         extraparams['topic_id'] = self.id
-         return apiclient.get_photos(**extraparams)
+        extraparams['topic_id'] = self.id
+        return apiclient.get_photos(**extraparams)
 
 class Comment(API_Item):
     datafields = ['name','link','comment','photo_url',\
                   'created','lat','lon','country','city','state']
     
     def __str__(self):
-         return "Comment from %s (%s)" % (self.name, self.link)
+        return "Comment from %s (%s)" % (self.name, self.link)
 
 ########################################
 
@@ -365,11 +364,11 @@ class ClientException(Exception):
          Base class for generic errors returned by the server
     """
     def __init__(self, error_json):
-         self.description = error_json['details']
-         self.problem = error_json['problem']
+        self.description = error_json['details']
+        self.problem = error_json['problem']
 
     def __str__(self):
-         return "%s: %s" % (self.problem, self.description)
+        return "%s: %s" % (self.problem, self.description)
 
 class UnauthorizedError(ClientException):
     pass;
